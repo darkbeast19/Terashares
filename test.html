@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><title>JSONBin Test</title></head>
+<body>
+<h2>JSONBin Save Test</h2>
+<button onclick="testRead()">1. Test READ</button>
+<button onclick="testWrite()">2. Test WRITE</button>
+<button onclick="testRead()">3. Test READ again</button>
+<pre id="out" style="background:#111;color:#0f0;padding:20px;margin-top:20px;white-space:pre-wrap"></pre>
+
+<script>
+var BIN_ID  = '69c1131bc3097a1dd54f5576';
+var API_KEY = '$2a$10$p0fNENGAwL1zxcwtSKF8Cu5puR2H6vuDUJmQCr0WRGdfjZyzk4Zuu';
+var URL     = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+
+function log(msg){ document.getElementById('out').textContent += msg + '\n'; }
+
+function testRead(){
+  log('--- Reading bin ---');
+  fetch(URL, {
+    method: 'GET',
+    headers: { 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' }
+  })
+  .then(function(r){ log('Status: ' + r.status); return r.text(); })
+  .then(function(t){ log('Response: ' + t); })
+  .catch(function(e){ log('ERROR: ' + e.message); });
+}
+
+function testWrite(){
+  log('--- Writing to bin ---');
+  var testData = { links: [{ id: 'test1', title: 'Test Link', dest: 'https://google.com', timer: 15 }] };
+  fetch(URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': API_KEY,
+      'X-Bin-Meta': 'false'
+    },
+    body: JSON.stringify(testData)
+  })
+  .then(function(r){ log('Status: ' + r.status); return r.text(); })
+  .then(function(t){ log('Response: ' + t); })
+  .catch(function(e){ log('ERROR: ' + e.message); });
+}
+</script>
+</body>
+</html>
